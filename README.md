@@ -1,5 +1,5 @@
 # DeepDendrite-modularization
-DeepDendrite with modularized layer APIs for building & data-driven training of deep detailed multi-compartment neural networks
+Extension to [DeepDendrite](https://github.com/pkuzyc/DeepDendrite) with modularized layer APIs for building & data-driven training of deep, detailed multi-compartment neural networks
 
 Code associated with the paper "Gan He, Tiejun Huang and Kai Du, (2025). Going deeper with morphologically detailed neural networks by error-backpropagating mirror neuron" (soon on biorxiv when ready).  Demo code for training, testing & transfer attack are provided.
 <div align="center">
@@ -7,10 +7,10 @@ Code associated with the paper "Gan He, Tiejun Huang and Kai Du, (2025). Going d
 </div>
 
 ## Directories
-src: Source code of DeepDendrite with support for layer APIs and modified NEURON simulator.  
-**NOTICE:** The modified NEURON simulator is required to generate network models for DeepDendrite.  
-mod: MOD files required by layer APIs.  
-coredat: Folders containing generated network models for training & validation.  
+**src:** Source code of DeepDendrite with support for layer APIs and modified NEURON simulator.  
+**mod:** MOD files required by layer APIs.  
+**coredat:** Folders containing layer APIs and generated network models for training & validation.  
+**adversarial:** Transfer adversarial attack on deep detailed network.  
 
 ## System Requirements
 A CUDA capable GPU is required.
