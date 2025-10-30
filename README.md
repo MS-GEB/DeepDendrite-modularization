@@ -32,12 +32,12 @@ Also the following dependencies are tested on Windows WSL2:
 - CUDA Toolkit == 12.9
 
 ## Installation Guide
-The modified NEURON and DeepDendrite are installed in ./install
+The modified NEURON and DeepDendrite will be installed in ./install
 ### 1. Compile the modified NEURON simulator
 **NOTICE:** Do not load NVIDIA HPC SDK to compile NEURON
 ```
 cd src/nrn_modify
-./configure --prefix ../../install --without-iv --with-paranrn --with-nrnpython=`which python`
+./configure --prefix="$PWD/../../install" --without-iv --with-paranrn --with-nrnpython=`which python` --disable-rx3d
 make -j8 && make install
 ```
 ### 2. Compile DeepDendrite

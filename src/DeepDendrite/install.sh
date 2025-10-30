@@ -1,0 +1,5 @@
+rm -rf build && mkdir build && cd build
+export CC=mpicc
+export CXX=mpicxx
+cmake .. -DCMAKE_C_FLAGS:STRING="-lrt -g -O0 -mp -mno-abm -acc" -DCMAKE_CXX_FLAGS:STRING="-lrt -std=c++17 -g -O0 -mp -mno-abm -acc" -DCOMPILE_LIBRARY_TYPE=STATIC -DCMAKE_INSTALL_PREFIX="$PWD/../../../install" -DADDITIONAL_MECHPATH="$PWD/../../../mod" -DCUDA_HOST_COMPILER=`which gcc` -DCUDA_PROPAGATE_HOST_FLAGS=OFF -DENABLE_SELECTIVE_GPU_PROFILING=ON -DENABLE_OPENACC=ON -DAUTO_TEST_WITH_SLURM=OFF -DAUTO_TEST_WITH_MPIEXEC=OFF -DFUNCTIONAL_TESTS=OFF -DUNIT_TESTS=OFF
+make -j24 && make install
