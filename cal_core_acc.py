@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     core_output = np.load(args.output)
     if args.dataset == 'mnist':
-        with np.load('./datasets/mnist.npz', allow_pickle=True) as f:
+        with np.load('../../datasets/mnist.npz', allow_pickle=True) as f:
             y_test = f['y_test']
     else:
         raise NotImplementedError(f"Unknown dataset {args.dataset}")

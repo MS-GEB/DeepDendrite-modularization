@@ -104,13 +104,13 @@ if __name__ == '__main__':
     parser.add_argument('-l', '--trainlen', type=int, default=60000)
     parser.add_argument('-b', '--batch_size', type=int, default=16)
     parser.add_argument('-e', '--epochs', type=int, default=30)
-    parser.add_argument('-f', '--folder', type=str, default='./coredat/demo_train')
+    parser.add_argument('-f', '--folder', type=str, default='.')
 
     args, _ = parser.parse_known_args()
 
     if args.dataset == 'mnist':
         from demo_networks import MnistFCNet as MyNet
-        with np.load('./datasets/mnist.npz', allow_pickle=True) as f:
+        with np.load('../../datasets/mnist.npz', allow_pickle=True) as f:
             x_train, y_train = f['x_train'], f['y_train']
             x_test, y_test = f['x_test'], f['y_test']
 

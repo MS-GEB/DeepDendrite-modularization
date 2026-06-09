@@ -11,6 +11,7 @@ batch_size = 64
 epochs = 60
 load_trained = False
 attack_method = 'fgsm'
+base_model = 'res'
 
 
 def attack_model(model, method, bounds, x_test, y_test, epsilons):
@@ -64,11 +65,11 @@ if __name__ == '__main__':
         model.load_weights(f"resnet20_{dataset}_{epochs:d}epochs_sgd{lr_str}.h5")
     model.evaluate(x_test, y_test, batch_size=batch_size)
 
-    epsilons = [0.02 * (i + 1) for i in range(20)]
+    epsilons = [0.02 * (i + 1) for i in range(10)]
     adv_img_list = attack_model(model, attack_method, (0, 1), tf.convert_to_tensor(x_test), tf.convert_to_tensor(y_test), epsilons)
 
     if not os.path.isdir(f"./{dataset}"):
         os.makedirs(f"./{dataset}")
     for adv_img, eps in zip(adv_img_list, epsilons):
-       save_name = f"./{dataset}/{attack_method}{eps:.3f}_test.npz"
+       save_name = f"./{dataset}/{attack_method}{base_model}{eps:.2f}_test.npz"
        np.savez(save_name, x_test=adv_img.numpy(), y_test=y_test)

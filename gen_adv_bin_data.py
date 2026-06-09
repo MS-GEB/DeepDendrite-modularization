@@ -6,8 +6,8 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-s', '--source-folder', type=str, default='./adversarial/mnist')
-    parser.add_argument('-d', '--dest-folder', type=str, default='./datasets/mnist')
+    parser.add_argument('-s', '--source-folder', type=str, default='./mnist')
+    parser.add_argument('-d', '--dest-folder', type=str, default='../datasets/mnist')
 
     args, _ = parser.parse_known_args()
 

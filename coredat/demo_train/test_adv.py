@@ -20,8 +20,8 @@ testtime = testlen * 500 // batchsize + 20
 weights_file = f"weights_51to60.npy"
 suffix = f"{epochs:d}_test{epochs:d}"
 weights_param_val_file = f"weights_param_val_{suffix}"
-base_model_list = ['res', 'vgg']
-attack_method_list = ['fgsm', 'pgd5', 'deepfool']
+base_model_list = ['res',]
+attack_method_list = ['fgsm',]
 epsilon_list = [0.02 * (i + 1) for i in range(10)]
 
 cmd = f"echo $(TZ=Asia/Shanghai date +%F%n%T)"
@@ -47,7 +47,7 @@ for base_model in base_model_list:
 
         for epsilon in epsilon_list:
             cmd = f"OMP_NUM_THREADS=1 {deepdend} -d {coredat_test} -e {testtime:d} -dt {timestep:.2f} -v 0 --nonv-gap 1 --need-record 1 "\
-                  f"--rec-file {coredat_test}/{attack_method}{base_model}{epsilon:.2f}_soma_v_{suffix} --input-file {datapath}/{attack_method}{base_model}{epsilon:.2f}_img_test "\
+                  f"--rec-file {coredat_test}/{attack_method}{base_model}{epsilon:.2f}_soma_v_{suffix} --input-file {datapath}/{attack_method}{base_model}{epsilon:.2f}_test "\
                   f"--param-val {coredat_test}/{weights_param_val_file} --lr_start {lr_start:d} --lr_end {lr_end:d} --mindelay 20 --training 0 --testing 1 --batchsize {batchsize:d} --cell-permute 3 --cell-nthread 16 --gpu"
             os.system(cmd)
 
