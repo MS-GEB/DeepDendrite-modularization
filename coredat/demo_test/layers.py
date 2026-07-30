@@ -1,9 +1,9 @@
 import numpy as np
 from neuron import h
+from PassiveL23PC import PassiveL23PC
 from utils import *
 
-mod_name_list = ['Linear_Grad_Syn', 'Linear_Syn', 'ReLU_Grad_Syn', 'ReLU_Syn', 'Softmax_Syn', 'Softmax_Syn_v2',
-                 'Linear_Grad_Syn_avg', 'Linear_Syn_avg', 'ReLU_Grad_Syn_avg', 'ReLU_Syn_avg', 'Softmax_Syn_avg',]
+mod_name_list = ['Linear_Grad_Syn_avg', 'Linear_Syn_avg', 'ReLU_Grad_Syn_avg', 'ReLU_Syn_avg', 'Softmax_Syn_avg',]
 
 class BaseLayer:
     def __init__(self, pc, idm, seg2synlist, target_var_list, rng = None, seed=None):
@@ -468,9 +468,9 @@ class OutputPoint(BaseLayer):
                         w_out_lines.append(w_str)
 
 
-class FullyConnectedHPC(BaseLayer):
+class FullyConnectedL23PC(BaseLayer):
     def __init__(self, N_in, N_out, N_multi, sids_in, in_activation='ReLU', **kwargs):
-        super(FullyConnectedHPC, self).__init__(**kwargs)
+        super(FullyConnectedL23PC, self).__init__(**kwargs)
         self.N_in = N_in
         self.N_out = N_out
         self.N_multi = N_multi
@@ -484,10 +484,11 @@ class FullyConnectedHPC(BaseLayer):
         self._connect_cells()
 
     def cell_instance(self):
-        cell = setup_hpc("PassiveHPC", "2013_03_06_cell11_1125_H41_06.asc")
-        for sec in cell.all:
-            sec.cm = 1.5
-            # sec.g_pas = 1e-3
+        cell = PassiveL23PC()
+        # cell = setup_hpc("PassiveHPC", "2013_03_06_cell11_1125_H41_06.asc")
+        # for sec in cell.all:
+        #     sec.cm = 1.5
+        #     # sec.g_pas = 1e-3
         return cell
 
     def cell_soma_sec(self, cell):
@@ -505,8 +506,8 @@ class FullyConnectedHPC(BaseLayer):
         return grad.soma
 
     def _create_cells(self):
-        h.load_file("import3d.hoc")
-        h.load_file("PassiveHPC.hoc")
+        # h.load_file("import3d.hoc")
+        # h.load_file("PassiveHPC.hoc")
         self.cells = []
         self.gids_cell = self.idm.alloc_gid(self.N_out)
         for i, gid_cell in enumerate(self.gids_cell):
@@ -523,24 +524,26 @@ class FullyConnectedHPC(BaseLayer):
 
     def _connect_cells(self):
         tmpcell = self.cell_instance()
+        self.total_apic = len(tmpcell.apic)
         self.total_dend = len(tmpcell.dend)
+        self.total_nsec = self.total_apic + self.total_dend
 
         # connection matrix input-to-out dendrites, each input connects N_multi (1 default) sites for each pyramidal
         # self.conn_dend = self.rng.integers(0, self.total_dend, (self.N_in, self.N_out, self.N_multi))
         # self.conn_loc = self.rng.random((self.N_in, self.N_out, self.N_multi))
-        self.conn_dend = np.zeros((self.N_in, self.N_out, self.N_multi), dtype=int)
+        self.conn_sec = np.zeros((self.N_in, self.N_out, self.N_multi), dtype=int)
         self.conn_loc = np.zeros((self.N_in, self.N_out, self.N_multi))
         for i in range(self.N_in):
             for j in range(self.N_out):
                 for k in range(self.N_multi):
-                    dist = 1e9  # proximal
-                    # dist = 0    # distal
-                    while dist > 50:    # proximal
-                    # while dist < 200:   # distal
-                        dend_id = self.rng.integers(0, self.total_dend)
-                        loc = self.rng.random()
-                        dist = h.distance(self.cell_soma_sec(tmpcell)(0.5), tmpcell.dend[dend_id](loc))
-                    self.conn_dend[i, j, k] = dend_id
+                    # dist = 1e9  # proximal
+                    # # dist = 0    # distal
+                    # while dist > 50:    # proximal
+                    # # while dist < 200:   # distal
+                    sec_id = self.rng.integers(0, self.total_nsec)
+                    loc = self.rng.random()
+                    # dist = h.distance(self.cell_soma_sec(tmpcell)(0.5), tmpcell.dend[dend_id](loc))
+                    self.conn_sec[i, j, k] = sec_id
                     self.conn_loc[i, j, k] = loc
 
         # weight matrix input-to-output dendrites
@@ -558,9 +561,12 @@ class FullyConnectedHPC(BaseLayer):
         for i in range(self.N_in):
             for j in range(self.N_out):
                 for k in range(self.N_multi):
-                    dend_id = self.conn_dend[i, j, k]
+                    sec_id = self.conn_sec[i, j, k]
                     loc = self.conn_loc[i, j, k]
-                    self.transr[i, j, k] = impd.transfer(loc, sec=tmpcell.dend[dend_id])
+                    if sec_id < self.total_apic:
+                        self.transr[i, j, k] = impd.transfer(loc, sec=tmpcell.apic[sec_id])
+                    else:
+                        self.transr[i, j, k] = impd.transfer(loc, sec=tmpcell.dend[sec_id - self.total_apic])
         self.cell_rsoma = impd.transfer(0.5, sec=self.cell_soma_sec(tmpcell))
         self.cell_rmean = np.sqrt(np.max(self.transr) * np.min(self.transr))
         del tmpcell, impd
@@ -573,12 +579,18 @@ class FullyConnectedHPC(BaseLayer):
                 cell = self.pc.gid2cell(gid_cell)
                 for j, sid_v_in in enumerate(self.sids_in):
                     for k in range(self.N_multi):
-                        dend_id = self.conn_dend[j, i, k]
+                        sec_id = self.conn_sec[j, i, k]
                         loc = self.conn_loc[j, i, k]
                         if self.in_activation == 'Linear':
-                            syn = h.Linear_Syn_avg(cell.dend[dend_id](loc))
+                            if sec_id < self.total_apic:
+                                syn = h.Linear_Syn_avg(cell.apic[sec_id](loc))
+                            else:
+                                syn = h.Linear_Syn_avg(cell.dend[sec_id - self.total_apic](loc))
                         else:
-                            syn = h.ReLU_Syn_avg(cell.dend[dend_id](loc))
+                            if sec_id < self.total_apic:
+                                syn = h.ReLU_Syn_avg(cell.apic[sec_id](loc))
+                            else:
+                                syn = h.ReLU_Syn_avg(cell.dend[sec_id - self.total_apic](loc))
                         self.add_mech_to_synlist(syn.get_segment(), syn)
                         self.synarray_forward[j, i, k] = syn
 

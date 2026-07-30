@@ -104,7 +104,7 @@ if __name__ == '__main__':
     parser.add_argument('-l', '--trainlen', type=int, default=60000)
     parser.add_argument('-b', '--batch_size', type=int, default=16)
     parser.add_argument('-e', '--epochs', type=int, default=30)
-    parser.add_argument('-f', '--folder', type=str, default='.')
+    parser.add_argument('-f', '--folder', type=str, default='./coredat/demo_train')
 
     args, _ = parser.parse_known_args()
 

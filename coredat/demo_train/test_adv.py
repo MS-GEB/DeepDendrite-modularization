@@ -1,13 +1,12 @@
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-
-workdir = "../.."
-deepdend = "../../install/bin/deepdendrite"
+current_dir = os.getcwd()
+workdir = os.path.normpath(os.path.join(current_dir, "../.."))
+deepdend = os.path.join(workdir, "install/bin/deepdendrite")
 dataset = 'mnist'
-batchsize = 4
-coredat_train = f"{workdir}/coredat/demo_train"
-coredat_test = f"{workdir}/coredat/demo_test"
+batchsize = 16
+coredat_train = os.path.join(workdir, "coredat/demo_train")
+coredat_test = os.path.join(workdir, "coredat/demo_test")
 timestep = 5
 lr_start = 200
 lr_end = 500
@@ -17,14 +16,14 @@ epochs = 60
 test_epoch = -1
 testlen = 10000
 testtime = testlen * 500 // batchsize + 20
-weights_file = f"weights_51to60.npy"
+weights_file = f"weights_41to60.npy"
 suffix = f"{epochs:d}_test{epochs:d}"
 weights_param_val_file = f"weights_param_val_{suffix}"
 base_model_list = ['res',]
 attack_method_list = ['fgsm',]
 epsilon_list = [0.02 * (i + 1) for i in range(10)]
 
-cmd = f"echo $(TZ=Asia/Shanghai date +%F%n%T)"
+cmd = f"echo $(date +%F%n%T)"
 os.system(cmd)
 
 cmd = f"python3 {workdir}/gen_weights_param_val.py -w {coredat_train}/{weights_file} "\
@@ -64,5 +63,5 @@ for base_model in base_model_list:
             cmd = f"python3 {workdir}/cal_core_acc.py -o {coredat_test}/{attack_method}{base_model}{epsilon:.2f}_soma_v_{suffix}.npy -d {dataset} -l {testlen:d}"
             os.system(cmd)
 
-        cmd = f"echo $(TZ=Asia/Shanghai date +%F%n%T)"
+        cmd = f"echo $(date +%F%n%T)"
         os.system(cmd)

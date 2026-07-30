@@ -1,38 +1,36 @@
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-
-workdir = "../.."
-deepdend = "../../install/bin/deepdendrite"
+current_dir = os.getcwd()
+workdir = os.path.normpath(os.path.join(current_dir, "../.."))
+deepdend = os.path.join(workdir, "install/bin/deepdendrite")
 dataset = 'mnist'
-batchsize = 4
-coredat_train = f"{workdir}/coredat/demo_train"
-coredat_test = f"{workdir}/coredat/demo_test"
+batchsize = 16
+coredat_train = os.path.join(workdir, "coredat/demo_train")
+coredat_test = os.path.join(workdir, "coredat/demo_test")
 timestep = 5
 lr_start = 200
 lr_end = 500
 datapath = f"{workdir}/datasets/{dataset}"
 nclasses = 10
-lr_scale = 0.005
+lr_scale = 0.03
 total_epochs = 60
-epoch_step = 10
+epoch_step = 20
 trainlen = 60000
 testlen = 10000
 traintime = trainlen * epoch_step * 500 // batchsize + 20
 testtime = testlen * 500 // batchsize + 20
-test_step = 3
+test_step = 5
 
 for epoch_start in range(1, total_epochs, epoch_step):
     epoch_end = epoch_start + epoch_step - 1
 
     # Train
-    cmd = f"echo $(TZ=Asia/Shanghai date +%F%n%T)"
+    cmd = f"echo $(date +%F%n%T)"
     os.system(cmd)
-    cmd = f"cd {coredat_train}"
-    os.system(cmd)
+    os.chdir(f"{coredat_train}")
     if epoch_start == 1:
         print('### build train network ###')
-        cmd = f"{workdir}/x86_64/special ./demo_train.py -d {dataset} -l {trainlen} -b {batchsize} -e {epoch_step} -f {coredat_train}"
+        cmd = f"{workdir}/x86_64/special {coredat_train}/demo_train.py -d {dataset} -l {trainlen} -b {batchsize} -e {epoch_step} -f {coredat_train}"
         os.system(cmd)
         
     cmd = f"python3 {coredat_train}/gen_param2rec.py -l {trainlen} -b {batchsize} -e {epoch_step} -r {coredat_train}/param2rec -o {coredat_train}/param2rec"
@@ -55,13 +53,12 @@ for epoch_start in range(1, total_epochs, epoch_step):
     os.system(cmd)
 
     # Test
-    cmd = f"echo $(TZ=Asia/Shanghai date +%F%n%T)"
+    cmd = f"echo $(date +%F%n%T)"
     os.system(cmd)
-    cmd = f"cd {coredat_test}"
-    os.system(cmd)
+    os.chdir(f"{coredat_test}")
     if epoch_start == 1:
         print('### build test network ###')
-        cmd = f"{workdir}/x86_64/special ./demo_test.py -d {dataset} -b {batchsize} -f {coredat_test} -w {coredat_train}/weights_{epoch_start}to{epoch_end}.npy"
+        cmd = f"{workdir}/x86_64/special {coredat_test}/demo_test.py -d {dataset} -b {batchsize} -f {coredat_test} -w {coredat_train}/weights_{epoch_start}to{epoch_end}.npy"
         os.system(cmd)
     for test_epoch in range(epoch_start, epoch_end, test_step):
         print(f'test epoch {test_epoch}')

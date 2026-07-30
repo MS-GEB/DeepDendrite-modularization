@@ -1,7 +1,7 @@
 # DeepDendrite-modularization
-Extension to [DeepDendrite](https://github.com/pkuzyc/DeepDendrite) with modularized layer APIs for constructing & data-driven training of deep, detailed multi-compartment neural networks.
+Extension to [DeepDendrite](https://github.com/pkuzyc/DeepDendrite) with modularized layer APIs for constructing & data-driven training of multi-layer, detailed multi-compartment neural networks.
 
-Code associated with the paper "Gan He, Kai Du and Tiejun Huang, (2026). Going deeper with morphologically detailed neural networks by error-backpropagating mirror neuron".  Demo code for training, testing & transfer attack are provided.
+Code associated with the paper "Gan He, Kai Du and Tiejun Huang, (2026). Going deeper with morphologically detailed neural networks by error-backpropagating gradient-mirror neuron".  Demo code for training, testing & transfer attack are provided.
 <div align="center">
   <img src="https://github.com/MS-GEB/DeepDendrite-modularization/blob/main/img/overview.jpg">
 </div>
@@ -52,7 +52,7 @@ module load /path/to/your/nvhpc/modulefiles
 A fully-connected detailed network with five hidden layers for image classification on MNIST
 ### 1. Compile MOD files
 ```
-./install/x86_64/nrnivmodl ./mod
+./install/x86_64/bin/nrnivmodl ./mod
 ```
 ### 2. Generate dataset for DeepDendrite
 ```
@@ -63,7 +63,7 @@ python3 gen_bin_data.py
 cd coredat/demo_train
 python3 task.py
 ```
-Training takes around 3 days on single A100 GPU
+Training takes around 1 day on single A100 GPU
 
 ## Demo for transfer attack
 ### 1. Train a 20-layer ResNet as base network and generate adversarial samples

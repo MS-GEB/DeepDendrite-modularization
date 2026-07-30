@@ -180,10 +180,10 @@ class MnistTinyFCNet(BaseNet):
         # forward
         self.input = layers.NetStimInput(N_in=1*28*28, pc=self.pc, idm=self.idm, rng=self.rng,
                                          seg2synlist=self.seg2synlist, target_var_list=self.target_var_list)
-        self.fc1 = layers.FullyConnectedHPC(N_in=1*28*28, N_out=64, N_multi=1, sids_in=self.input.sids_out,
-                                            in_activation='Linear', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
+        self.fc1 = layers.FullyConnectedL23PC(N_in=1*28*28, N_out=64, N_multi=1, sids_in=self.input.sids_out,
+                                              in_activation='Linear', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
         self.output = layers.OutputPoint(N_in=64, N_out=10, sids_in=self.fc1.sids_out,
                                          in_activation='ReLU', pc=self.pc, idm=self.idm,
                                          rng=self.rng, seg2synlist=self.seg2synlist,
@@ -203,26 +203,26 @@ class MnistFCNet(BaseNet):
         # forward
         self.input = layers.NetStimInput(N_in=1*28*28, pc=self.pc, idm=self.idm, rng=self.rng,
                                          seg2synlist=self.seg2synlist, target_var_list=self.target_var_list)
-        self.fc1 = layers.FullyConnectedHPC(N_in=1*28*28, N_out=256, N_multi=1, sids_in=self.input.sids_out,
-                                            in_activation='Linear', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
-        self.fc2 = layers.FullyConnectedHPC(N_in=256, N_out=256, N_multi=1, sids_in=self.fc1.sids_out,
-                                            in_activation='ReLU', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
-        self.fc3 = layers.FullyConnectedHPC(N_in=256, N_out=256, N_multi=1, sids_in=self.fc2.sids_out,
-                                            in_activation='ReLU', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
-        self.fc4 = layers.FullyConnectedHPC(N_in=256, N_out=256, N_multi=1, sids_in=self.fc3.sids_out,
-                                            in_activation='ReLU', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
-        self.fc5 = layers.FullyConnectedHPC(N_in=256, N_out=256, N_multi=1, sids_in=self.fc4.sids_out,
-                                            in_activation='ReLU', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
+        self.fc1 = layers.FullyConnectedL23PC(N_in=1*28*28, N_out=256, N_multi=1, sids_in=self.input.sids_out,
+                                              in_activation='Linear', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
+        self.fc2 = layers.FullyConnectedL23PC(N_in=256, N_out=256, N_multi=1, sids_in=self.fc1.sids_out,
+                                              in_activation='ReLU', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
+        self.fc3 = layers.FullyConnectedL23PC(N_in=256, N_out=256, N_multi=1, sids_in=self.fc2.sids_out,
+                                              in_activation='ReLU', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
+        self.fc4 = layers.FullyConnectedL23PC(N_in=256, N_out=256, N_multi=1, sids_in=self.fc3.sids_out,
+                                              in_activation='ReLU', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
+        self.fc5 = layers.FullyConnectedL23PC(N_in=256, N_out=256, N_multi=1, sids_in=self.fc4.sids_out,
+                                              in_activation='ReLU', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
         self.output = layers.OutputPoint(N_in=256, N_out=10, sids_in=self.fc5.sids_out,
                                          in_activation='ReLU', pc=self.pc, idm=self.idm,
                                          rng=self.rng, seg2synlist=self.seg2synlist,
@@ -257,10 +257,10 @@ class MnistConvNet(BaseNet):
                                         pc=self.pc, idm=self.idm, rng=self.rng, seg2synlist=self.seg2synlist,
                                         target_var_list=self.target_var_list)
         self.flat = np.reshape(self.conv2.sids_out, -1)
-        self.fc1 = layers.FullyConnectedHPC(N_in=self.flat.size, N_out=1024, N_multi=1, sids_in=self.flat,
-                                            in_activation='ReLU', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
+        self.fc1 = layers.FullyConnectedL23PC(N_in=self.flat.size, N_out=1024, N_multi=1, sids_in=self.flat,
+                                              in_activation='ReLU', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
         self.output = layers.OutputPoint(N_in=1024, N_out=10, sids_in=self.fc1.sids_out,
                                          in_activation='ReLU', pc=self.pc, idm=self.idm,
                                          rng=self.rng, seg2synlist=self.seg2synlist,
@@ -282,18 +282,18 @@ class Cifar10FCNet(BaseNet):
         # forward
         self.input = layers.NetStimInput(N_in=3*32*32, pc=self.pc, idm=self.idm, rng=self.rng,
                                          seg2synlist=self.seg2synlist, target_var_list=self.target_var_list)
-        self.fc1 = layers.FullyConnectedHPC(N_in=3*32*32, N_out=1024, N_multi=1, sids_in=self.input.sids_out,
-                                            in_activation='Linear', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list = self.target_var_list)
-        self.fc2 = layers.FullyConnectedHPC(N_in=1024, N_out=1024, N_multi=1, sids_in=self.fc1.sids_out,
-                                            in_activation='ReLU', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
-        self.fc3 = layers.FullyConnectedHPC(N_in=1024, N_out=1024, N_multi=1, sids_in=self.fc2.sids_out,
-                                            in_activation='ReLU', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
+        self.fc1 = layers.FullyConnectedL23PC(N_in=3*32*32, N_out=1024, N_multi=1, sids_in=self.input.sids_out,
+                                              in_activation='Linear', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list = self.target_var_list)
+        self.fc2 = layers.FullyConnectedL23PC(N_in=1024, N_out=1024, N_multi=1, sids_in=self.fc1.sids_out,
+                                              in_activation='ReLU', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
+        self.fc3 = layers.FullyConnectedL23PC(N_in=1024, N_out=1024, N_multi=1, sids_in=self.fc2.sids_out,
+                                              in_activation='ReLU', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
         self.output = layers.OutputPoint(N_in=1024, N_out=10, sids_in=self.fc3.sids_out,
                                          in_activation='ReLU', pc=self.pc, idm=self.idm,
                                          rng=self.rng, seg2synlist=self.seg2synlist,
@@ -331,10 +331,10 @@ class Cifar10ConvNet(BaseNet):
                                         pc=self.pc, idm=self.idm, rng=self.rng, seg2synlist=self.seg2synlist,
                                         target_var_list=self.target_var_list)
         self.flat = np.reshape(self.conv3.sids_out, -1)
-        self.fc1 = layers.FullyConnectedHPC(N_in=self.flat.size, N_out=1024, N_multi=1, sids_in=self.flat,
-                                            in_activation='ReLU', pc=self.pc, idm=self.idm,
-                                            rng=self.rng, seg2synlist=self.seg2synlist,
-                                            target_var_list=self.target_var_list)
+        self.fc1 = layers.FullyConnectedL23PC(N_in=self.flat.size, N_out=1024, N_multi=1, sids_in=self.flat,
+                                              in_activation='ReLU', pc=self.pc, idm=self.idm,
+                                              rng=self.rng, seg2synlist=self.seg2synlist,
+                                              target_var_list=self.target_var_list)
         self.output = layers.OutputPoint(N_in=1024, N_out=10, sids_in=self.fc1.sids_out,
                                          in_activation='ReLU', pc=self.pc, idm=self.idm,
                                          rng=self.rng, seg2synlist=self.seg2synlist,

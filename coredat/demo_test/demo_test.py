@@ -102,8 +102,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--dataset', type=str, default='mnist')
     parser.add_argument('-b', '--batch_size', type=int, default=16)
-    parser.add_argument('-f', '--folder', type=str, default='../demo_test')
-    parser.add_argument('-w', '--weights', type=str, default='../demo_train/weights_51to60.npy')
+    parser.add_argument('-f', '--folder', type=str, default='./coredat/demo_test')
+    parser.add_argument('-w', '--weights', type=str, default='./coredat/demo_train/weights41to60.npy')
 
     args, _ = parser.parse_known_args()
 
