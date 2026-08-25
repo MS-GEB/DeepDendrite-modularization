@@ -1,7 +1,7 @@
 # DeepDendrite-modularization
 Extension to [DeepDendrite](https://github.com/pkuzyc/DeepDendrite) with modularized layer APIs for constructing & data-driven training of multi-layer, detailed multi-compartment neural networks.
 
-Code associated with the paper "Gan He, Kai Du and Tiejun Huang, (2026). Going deeper with morphologically detailed neural networks by error-backpropagating gradient-mirror neuron".  Demo code for training, testing & transfer attack are provided.
+Code associated with the paper "Gan He, Kai Du and Tiejun Huang, (2026). Going deeper with morphologically detailed neural networks by simulation-based gradient propagation".  Demo code for training, testing & transfer attack are provided.
 <div align="center">
   <img src="https://github.com/MS-GEB/DeepDendrite-modularization/blob/main/img/overview.jpg">
 </div>
